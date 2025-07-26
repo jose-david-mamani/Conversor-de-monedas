@@ -1,12 +1,9 @@
-public class inicioCambioDeNombre {
+public class inicioCambioDeNombre{
 
-    public static void main(String[] arStrings){
+    public static void main(String[] arStrings) {
 
-        System.out.println("hello words");
-
-        String nombre = "";
-
-        int edad = 0;
+    }
+}
 
         // agrego en tema de el comversor de moneda
 // primero para empezar tengo que definir lo que se va hacer en primer lugar y para ello
@@ -18,5 +15,6 @@ public class inicioCambioDeNombre {
 
     // aqui van las diferentes monedas y en eso se define y por debajo van las siguientes respuestas
 
-    }
-}
+
+
+
