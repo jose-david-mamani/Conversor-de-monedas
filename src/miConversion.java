@@ -1,29 +1,18 @@
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class miConversion {
 
-    @SerializedName("base_code")
-    String moneda_base = "";
-    @SerializedName("target_code")
-    String otra_moneda = "";
-    String conversion_rate = "";
-    String conversion_result = "";    // por cuanto se quiere ver el dinero por usd
 
+    public static void main(String[] args) throws IOException, InterruptedException {
 
-
-    public static void main(String[] args)  throws IOException, InterruptedException {
-
-
-        String mensajeCotizacion= """
+        String mensajeCotizacion = """
                 Código de moneda        Nombre de la moneda           País
                  USD	                Dólar estadounidense	      Estados Unidos
                  ARS	                Peso argentino	              Argentina
@@ -39,81 +28,50 @@ public class miConversion {
                  EUR	                Euro	                      Unión Europea
                 """;
 
+
         Scanner escanea = new Scanner(System.in);
 
-        //primera moneda base
+        System.out.println("¿Estás preparado para comenzar a conocer las cotizaciones? -si/no");
+        String unString = escanea.next();
+        int respuesta = unString.compareToIgnoreCase("si");
+        int i = 0;
 
-        System.out.println("        ********* QUE MONEDA POSEE? ********* \n" + mensajeCotizacion);
+        while (i == respuesta) {
+            System.out.println(mensajeCotizacion);
+            System.out.println("Que moneda desea utilizar como moneda base");
         String monedaBase = escanea.next().toUpperCase();
 
-
-        //segunda moneda
-
-        System.out.println("  ********* A QUE MONEDA DESEA CONVERTIR *********  \n".toUpperCase() + mensajeCotizacion);
-        String segundaMoneda = escanea.next().toUpperCase();  // ................... aqui se define la segunda moneda
-
-
+            System.out.println("Que moneda desea utilizar como (segunda moneda)");
+            String segundaMoneda = escanea.next().toUpperCase();
 
         System.out.println("CUANTOS " + monedaBase + " VA A CONVERTIRLOS EN " + segundaMoneda );
-        int num = escanea.nextInt();
+            double num = escanea.nextDouble();
+
 
         String enlace = "https://v6.exchangerate-api.com/v6/035a59fa61757caf8da3925c/pair/" + monedaBase + "/" + segundaMoneda + "/"+ num ;
 
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(enlace))         //"https://v6.exchangerate-api.com/v6/035a59fa61757caf8da3925c/latest/USD "
-                    .build();                     // esto muestra todos los pares// esto solo dos
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(enlace)).
+                    build();
         HttpResponse<String> response = client
-                    .send(request, HttpResponse.BodyHandlers.ofString());
+                .send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+            String cuerpoRespuesta = response.body();
 
         Gson gson = new Gson();
-        String json = response.body();
+            formulario form = gson.fromJson(cuerpoRespuesta, formulario.class);
+            System.out.println(form);
 
-        // Deserialization
-        miConversion lista = gson.fromJson(json, miConversion.class);
+            System.out.println("Desea hacer de nuevo otra operacion? *** si/no ***");
+            String yesNo = escanea.next();
+            i = yesNo.compareToIgnoreCase("si");
+            if (i == 1) {
+                break;
 
-        String textoResultado ="para comprar 1 ".toUpperCase()+ monedaBase + " necesitarás ".toUpperCase() + lista.conversion_rate
-                + " " + segundaMoneda ;
-        System.out.println(textoResultado);
-
-        String textoConversion = "LA  CONVERSION DE " + num + " " + monedaBase + " A " + segundaMoneda +
-                " SON EN TOTAL DE: $" + lista.conversion_result + segundaMoneda ;
-        System.out.println(textoConversion);
-
-
+            }
 
     }
 
 }
-//        String soloNumer = obj2.conversion_rate.substring(0,5);
-//        double stringNum = Double.parseDouble(soloNumer);
-//
-//        String text = """
-//                El cambio oficial es de:
-//                 $ %s
-//                """.formatted(soloNumer);
-//
-//
-//        System.out.println(text);
-//
-//
-//        num = num * stringNum;
-//
-//        System.out.println("el resultado es de " + num);
-//
-//        DecimalFormat numComas = new DecimalFormat();
-//        txt = numComas.format(stringNum);
-//        System.out.println(txt);
-//
-
-        /* En la séptima fase de nuestro desafío, nos sumergimos en el análisis de la respuesta JSON utilizando la biblioteca
-Gson en Java. La manipulación de datos JSON es esencial, ya que la mayoría las respuestas de las API se presentan en este formato.
-
---> Para facilitar el análisis de los datos que se obtendrán de la API, recomendamos el uso de herramientas como Postman.
-
-Con la biblioteca Gson, puedes realizar el mapeo eficiente de los datos JSON a objetos Java, facilitando así la extracción
- y manipulación de la información necesaria.
-
-Recuerda utilizar las clases proporcionadas por Gson, como JsonParser y JsonObject, para acceder a las distintas propiedades
- de la respuesta JSON. */
-
+}
