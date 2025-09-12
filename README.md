@@ -1,4 +1,4 @@
-MonedaCotiza Java
+Conversor de monedas con Java
 
 MonedaCotiza es una aplicación desarrollada en Java que permite consultar en tiempo real las cotizaciones de varias monedas del mundo. Ideal para usuarios que quieren obtener información actualizada sobre tipos de cambio de manera y rápida.
 Características
